@@ -3,3 +3,13 @@ Sample Bots/Java/SampleBot/sample-bot.iml
 Sample Bots/Java/SampleBot/target
 Reference Bots/Java/ReferenceBot/.idea/
 Reference Bots/Java/ReferenceBot/ReferenceBot.iml
+Sample Bots/C#/SampleBot/bin
+Sample Bots/C#/SampleBot/obj
+Reference Bots/C#/ReferenceBot/bin
+Reference Bots/C#/ReferenceBot/obj
+*.suo
+*.user
+.vs/
+SnippyShips/SnippyShips/bin
+SnippyShips/SnippyShips/obj
+SnippyShips/SnippyShips/packages/

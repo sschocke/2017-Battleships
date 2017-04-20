@@ -1,0 +1,1 @@
+GameEngine\Battleships\Battleships\bin\Release\Battleships.exe --pretty -b "Reference Bots\C#\ReferenceBot" "SnippyShips\SnippyShips"
