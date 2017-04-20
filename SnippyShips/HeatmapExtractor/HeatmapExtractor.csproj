@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6088B292-39AE-4067-912E-A8365834069D}</ProjectGuid>
+    <ProjectGuid>{4FB1310F-8A3D-4F8F-A23F-E90ECB9C9C05}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SnippyShips</RootNamespace>
-    <AssemblyName>SnippyShips</AssemblyName>
+    <RootNamespace>HeatmapExtractor</RootNamespace>
+    <AssemblyName>HeatmapExtractor</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,12 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,28 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\State\BattleshipPlayer.cs" />
-    <Compile Include="Domain\State\Cell.cs" />
-    <Compile Include="Domain\State\GameState.cs" />
-    <Compile Include="Domain\State\OpponentCell.cs" />
-    <Compile Include="Domain\State\OpponentMap.cs" />
-    <Compile Include="Domain\State\OpponentShip.cs" />
-    <Compile Include="Domain\State\PlayerMap.cs" />
-    <Compile Include="Domain\State\Ship.cs" />
-    <Compile Include="Domain\State\Weapon.cs" />
-    <Compile Include="SnippyBot.cs" />
-    <Compile Include="Domain\Command\Code\Code.cs" />
-    <Compile Include="Domain\Command\Command.cs" />
-    <Compile Include="Domain\Command\Direction\Direction.cs" />
-    <Compile Include="Domain\Command\PlaceShipCommand.cs" />
-    <Compile Include="Domain\Command\Ship\ShipType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="bot.json" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

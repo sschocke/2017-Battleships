@@ -1,6 +1,6 @@
-﻿namespace SampleBot.Domain.Command.Ship
+﻿namespace SnippyShips.Domain.Command.Ship
 {
-    public enum Ship
+    public enum ShipType
     {
         Battleship,
         Carrier,

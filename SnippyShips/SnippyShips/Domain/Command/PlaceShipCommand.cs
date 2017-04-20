@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace SampleBot.Domain.Command
+namespace SnippyShips.Domain.Command
 {
     public class PlaceShipCommand
     {
-        public List<Ship.Ship> Ships { get; set; }
+        public List<Ship.ShipType> Ships { get; set; }
         public List<Point> Coordinates { get; set; }
         public List<Direction.Direction> Directions { get; set; }
 

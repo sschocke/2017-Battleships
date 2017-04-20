@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using SampleBot.Domain.Command;
-using SampleBot.Domain.Command.Code;
-using SampleBot.Domain.Command.Direction;
-using SampleBot.Domain.Command.Ship;
+using SnippyShips.Domain.Command;
+using SnippyShips.Domain.Command.Code;
+using SnippyShips.Domain.Command.Direction;
+using SnippyShips.Domain.Command.Ship;
 using System.Drawing;
 using System.IO;
 using System.Diagnostics;
+using SnippyShips.Domain.State;
 
 namespace SnippyShips
 {
@@ -31,13 +32,13 @@ namespace SnippyShips
 
         public void Execute()
         {
-            dynamic state = JsonConvert.DeserializeObject(LoadState());
+            GameState state = JsonConvert.DeserializeObject<GameState>(LoadState());
 
             int phase = state.Phase;
 
             if (phase == 1)
             {
-                var placeShips = PlaceShips();
+                var placeShips = PlaceShips(state);
                 WritePlaceShips(placeShips);
             }
             else
@@ -47,48 +48,108 @@ namespace SnippyShips
             }
         }
 
-        private PlaceShipCommand PlaceShips()
+        private PlaceShipCommand PlaceShips(GameState state)
         {
-            var shipsToPlace = new List<Ship>
+            Random rnd = new Random();
+
+            var shipsToPlace = new List<ShipType>
             {
-                Ship.Battleship,
-                Ship.Carrier,
-                Ship.Cruiser,
-                Ship.Destroyer,
-                Ship.Submarine
+                ShipType.Battleship,
+                ShipType.Carrier,
+                ShipType.Cruiser,
+                ShipType.Destroyer,
+                ShipType.Submarine
             };
 
-            var coordinates = new List<Point>
-            {
-                new Point(1, 0),
-                new Point(3, 1),
-                new Point(4, 2),
-                new Point(7, 3),
-                new Point(1, 8),
-            };
+            List<ShipType> ships = new List<ShipType>();
+            List<Point> coordinates = new List<Point>();
+            List<Direction> directions = new List<Direction>();
 
-            var directions = new List<Direction>
+            while( shipsToPlace.Any())
             {
-                Direction.North,
-                Direction.East,
-                Direction.North,
-                Direction.North,
-                Direction.East
-            };
+                var ship = shipsToPlace.First();
+
+                Point coord = new Point(rnd.Next(0, state.PlayerMap.MapWidth - 1), rnd.Next(0, state.PlayerMap.MapHeight - 1));
+                var availDirections = new[] { Direction.North, Direction.East, Direction.South, Direction.West };
+                availDirections = availDirections.OrderBy(x => rnd.Next()).ToArray();
+                foreach (Direction dir in availDirections)
+                {
+                    // Check if it can fit
+                    if (state.PlayerMap.HasCellsForDirection(coord, dir, Ship.Size(ship)) == false) continue;
+                    List<Cell> cells = state.PlayerMap.GetAllCellsInDirection(coord, dir, Ship.Size(ship));
+                    if (cells.Any(cell => cell.Occupied)) continue;
+
+                    // If it does, add to the commands, mark cells as occupied and remove from list
+                    ships.Add(ship);
+                    coordinates.Add(coord);
+                    directions.Add(dir);
+
+                    cells.ForEach(cell => { cell.Occupied = true; });
+
+                    shipsToPlace.Remove(ship);
+                    break;
+                }
+            }
 
             return new PlaceShipCommand
             {
-                Ships = shipsToPlace,
+                Ships = ships,
                 Coordinates = coordinates,
                 Directions = directions
             };
         }
 
-        private Command MakeMove(dynamic state)
+        private Command MakeMove(GameState state)
         {
-            var random = new Random();
+            state.OpponentMap.CalcProbabilities(state.PlayerMap.Owner);
+            var sortedCells = state.OpponentMap.Cells.OrderByDescending(cell => cell.Probability);
+            int bestProbability = sortedCells.First().Probability;
+            var bestCells = from OpponentCell oc in sortedCells
+                            where oc.Probability == bestProbability
+                            select oc;
+
+            Random rnd = new Random();
+            var targetCell = bestCells.ToArray()[rnd.Next(bestCells.Count())];
+
+            var heatmapFile = Path.Combine(WorkingDirectory, "heatmap.png");
+            Bitmap heatmap = new Bitmap(state.PlayerMap.MapWidth * 32, (state.PlayerMap.MapHeight * 32) + 100);
+            Graphics heatpage = Graphics.FromImage(heatmap);
+            Font gridfont = new Font(FontFamily.GenericMonospace, 22, GraphicsUnit.Pixel);
+            state.OpponentMap.Cells.ForEach(cell =>
+            {
+            int heatlevel = 255 - Math.Min(cell.Probability * 10, 255);
+            Color heat = Color.FromArgb(heatlevel, heatlevel, heatlevel);
+            Brush heatbrush = new SolidBrush(heat);
+            heatpage.FillRectangle(heatbrush, cell.X * 32, cell.Y * 32, 31, 31);
+            heatpage.DrawRectangle(Pens.Black, cell.X * 32, cell.Y * 32, 31, 31);
+            if (cell == targetCell)
+                heatpage.DrawRectangle(Pens.Red, cell.X * 32, cell.Y * 32, 31, 31);
+            if (cell.Missed)
+            {
+                heatpage.DrawString("X", gridfont, Brushes.Black, (cell.X * 32) + 5, (cell.Y * 32) + 5);
+            }
+            if (cell.Damaged)
+            {
+                //heatpage.DrawString("O", gridfont, Brushes.Red, (cell.X * 32) + 5, (cell.Y * 32) + 5);
+                heatpage.FillEllipse(Brushes.Red, (cell.X * 32) + 4, (cell.Y * 32) + 4, 24, 24);
+                }
+            });
+            int yOffset = (state.PlayerMap.MapHeight * 32) + 10;
+            Font font = new Font(FontFamily.GenericMonospace, 8, GraphicsUnit.Pixel);
+            heatpage.DrawString((state.OpponentMap.Hunting ? "Destroy" : "Hunting"), font, Brushes.White, 5, yOffset);
+            for( int s=0; s<state.OpponentMap.Ships.Count; s++)
+            {
+                var ship = state.OpponentMap.Ships[s];
+                if (ship.Destroyed == false) {
+                    heatpage.DrawString(ship.ShipType.ToString(), font, Brushes.White, 5, yOffset + (s * 10) + 10);
+                }
+            }
+            heatmap.Save(heatmapFile);
+
+
+            //var random = new Random();
             var code = Code.FireShot;
-            return new Command(code, random.Next(0, 9), random.Next(0, 9));
+            return new Command(code, targetCell.X, targetCell.Y);
         }
 
         private string LoadState()

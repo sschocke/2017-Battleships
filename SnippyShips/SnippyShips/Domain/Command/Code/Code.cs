@@ -1,4 +1,4 @@
-﻿namespace SampleBot.Domain.Command.Code
+﻿namespace SnippyShips.Domain.Command.Code
 {
     public enum Code
     {

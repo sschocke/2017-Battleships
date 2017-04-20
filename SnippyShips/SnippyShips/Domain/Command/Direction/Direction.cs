@@ -1,4 +1,4 @@
-﻿namespace SampleBot.Domain.Command.Direction
+﻿namespace SnippyShips.Domain.Command.Direction
 
 {
     public enum Direction

@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnippyShips", "SnippyShips.csproj", "{6088B292-39AE-4067-912E-A8365834069D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeatmapExtractor", "..\HeatmapExtractor\HeatmapExtractor.csproj", "{4FB1310F-8A3D-4F8F-A23F-E90ECB9C9C05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6088B292-39AE-4067-912E-A8365834069D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6088B292-39AE-4067-912E-A8365834069D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6088B292-39AE-4067-912E-A8365834069D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FB1310F-8A3D-4F8F-A23F-E90ECB9C9C05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FB1310F-8A3D-4F8F-A23F-E90ECB9C9C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FB1310F-8A3D-4F8F-A23F-E90ECB9C9C05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FB1310F-8A3D-4F8F-A23F-E90ECB9C9C05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

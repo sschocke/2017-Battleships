@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace SampleBot.Domain.Command
+namespace SnippyShips.Domain.Command
 {
     public class Command
     {
